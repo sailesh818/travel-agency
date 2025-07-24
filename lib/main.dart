@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:travel_agency/landing/page/landing_page.dart';
+import 'package:travel_agency/home/page/home_page.dart';
 import 'firebase_options.dart';
 
 final ValueNotifier<bool> isDarkMode = ValueNotifier(false);
@@ -11,6 +11,7 @@ void main() async{
 );
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
             themeMode: dark ? ThemeMode.dark : ThemeMode.light,
-            home: const TravelLandingPage(),
+            home: HomePage(),
         );
       },
       
