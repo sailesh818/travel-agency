@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           'createdAt': Timestamp.now(),
         });
       }
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage(onChipSelected: (String label) {  }, userName: '',)));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successful login")));
     }
   } catch (e) { 

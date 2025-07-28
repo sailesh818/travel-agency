@@ -31,7 +31,7 @@ class AppDrawerWidget extends StatelessWidget {
           const ListTile(title: Text("Home")),
           InkWell(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>ProfilePage()));
+              Navigator.push(context, MaterialPageRoute(builder: (_)=>ProfilePage(role: 'user',)));
             },
             child: const ListTile(title: Text("Profile"))),
           InkWell(

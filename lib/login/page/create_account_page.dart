@@ -22,7 +22,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         email: emailcontroller.text, 
         password: passwordcontroller.text
       );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomePage(onChipSelected: (String label) { }, userName: '',)));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully created account")));
 
     }catch(e){
