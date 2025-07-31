@@ -1,7 +1,6 @@
-// CountryPage.dart
-
 import 'package:flutter/material.dart';
 import 'package:travel_agency/city/page/city_page.dart';
+import 'package:travel_agency/country/widget/country_card_widget.dart';
 
 class CountryPage extends StatefulWidget {
   final String selected;
@@ -83,30 +82,9 @@ class _CountryPageState extends State<CountryPage> {
               final country = filteredCountries[index];
               return GestureDetector(
                 onTap: () => cityPage(country["name"]!),
-                child: Card(
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.network(
-                        country["flagUrl"]!,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        country["name"]!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                child: CountryCardWidget(
+                  name: country["name"]!,
+                  flagUrl: country["flagUrl"]!,
                 ),
               );
             },

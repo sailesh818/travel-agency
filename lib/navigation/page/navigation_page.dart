@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_agency/agency_dashboard/page/agency_dashboard_page.dart';
 import 'package:travel_agency/cart/page/cart_page.dart';
 import 'package:travel_agency/country/page/country_page.dart';
 import 'package:travel_agency/home/page/home_page.dart';
@@ -9,11 +10,13 @@ import 'package:travel_agency/saved/page/saved_page.dart';
 class MainNavigationPage extends StatefulWidget {
   final String role;
   final String userName;
+  final String email;
 
   const MainNavigationPage({
     Key? key,
     required this.role,
     required this.userName,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -28,6 +31,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   @override
   void initState() {
     super.initState();
+
     _pages = [
       HomePage(
         userName: widget.userName,
@@ -38,9 +42,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           );
         },
       ),
-      SavedPage(),  // NEW
-      CartPage(),   // NEW
-      ProfilePage(role: widget.role),
+      SavedPage(),
+      CartPage(),
+      widget.role == 'agency'
+          ? AgencyDashboard(email: widget.email)
+          : ProfilePage(role: widget.role),
     ];
   }
 
@@ -54,7 +60,6 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           IconButton(
             icon: const Icon(Icons.language),
             onPressed: () {
-              // Language settings logic
             },
           ),
         ],

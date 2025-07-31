@@ -1,4 +1,9 @@
+
 import 'package:flutter/material.dart';
+import 'package:travel_agency/db/database_helper.dart';
+import 'package:travel_agency/home/widget/package_card_widget.dart';
+import 'package:travel_agency/home/widget/search_bar_widget.dart';
+import 'package:travel_agency/package/page/package_detail_page.dart';
 
 class HomePage extends StatefulWidget {
   final void Function(String label) onChipSelected;
@@ -29,6 +34,29 @@ class _HomePageState extends State<HomePage> {
   ];
 
   String selectedCategory = "All";
+  List<Map<String, dynamic>> localPackages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadLocalPackages();
+  }
+
+  Future<void> loadLocalPackages() async {
+    final db = await DatabaseHelper.instance.db;
+    final List<Map<String, dynamic>> result =
+        await db.query('packages', limit: 6);
+
+    setState(() {
+      localPackages = result.map((pkg) => {
+            "title": pkg["title"],
+            "image": pkg["image"],
+            "Prices": pkg["price"],
+            "Packages": pkg["description"],
+            "type": pkg["type"] ?? "All"
+          }).toList();
+    });
+  }
 
   final List<Map<String, dynamic>> packageItems = [
     {
@@ -113,74 +141,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildPackageCard(Map<String, dynamic> item) {
-    return Container(
-      width: 240,
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            Image.network(
-              item["image"],
-              height: 230,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-            Container(
-              height: 230,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [Colors.black54, Colors.transparent],
-                ),
-              ),
-            ),
-            Positioned(
-              top: 20,
-              right: 12,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.tealAccent,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  item["Packages"],
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 10,
-              left: 12,
-              right: 12,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(item["title"],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  Text(item["Prices"],
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      )),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -191,24 +151,11 @@ class _HomePageState extends State<HomePage> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: 12),
-        TextField(
+        SearchBarWidget(
           controller: searchController,
           onChanged: (_) => setState(() {}),
-          decoration: InputDecoration(
-            hintText: "Search tours, countries...",
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: searchController.text.isNotEmpty
-                ? IconButton(
-                    onPressed: () {
-                      searchController.clear();
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.clear),
-                  )
-                : null,
-            border: const OutlineInputBorder(),
-          ),
         ),
+
         const SizedBox(height: 12),
         SizedBox(
           height: 40,
@@ -230,9 +177,36 @@ class _HomePageState extends State<HomePage> {
             scrollDirection: Axis.horizontal,
             itemCount: filteredPackages.length,
             itemBuilder: (context, index) =>
-                buildPackageCard(filteredPackages[index]),
+                PackageCardWidget(item: filteredPackages[index]),
           ),
         ),
+        const SizedBox(height: 20),
+        Text(
+          "Agency Packages",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 10),
+        localPackages.isEmpty
+            ? const Center(child: Text("No data available"))
+            : SizedBox(
+                height: 260,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: localPackages.length,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PackageDetailPage(packageData: localPackages[index]),
+                        ),
+                      );
+                    },
+                    child: PackageCardWidget(item: localPackages[index]),
+                  ),
+                ),
+              ),
       ],
     );
   }
